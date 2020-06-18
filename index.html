@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/AllOtherDistricts_1.js"></script>
+        <script src="data/TotalVehicles_2.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[50.378100740154345,-7.705720681428295],[56.826347674890734,3.2889508919295163]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_BaseMap_0');
+        map.getPane('pane_BaseMap_0').style.zIndex = 400;
+        var layer_BaseMap_0 = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+            pane: 'pane_BaseMap_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 16
+        });
+        layer_BaseMap_0;
+        map.addLayer(layer_BaseMap_0);
+        function pop_AllOtherDistricts_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                     <tr>\
+                        <td colspan="2"><strong>Area</strong><br />' + (feature.properties['lad18nm'] !== null ? autolinker.link(feature.properties['lad18nm'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>County</strong><br />' + (feature.properties['county'] !== null ? autolinker.link(feature.properties['county'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Parent Code</strong><br />' + (feature.properties['lad18cd'] !== null ? autolinker.link(feature.properties['lad18cd'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_AllOtherDistricts_1_0() {
+            return {
+                pane: 'pane_AllOtherDistricts_1',
+                opacity: 1,
+                color: 'rgba(255,255,255,0.16862745098039217)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,0.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_AllOtherDistricts_1');
+        map.getPane('pane_AllOtherDistricts_1').style.zIndex = 401;
+        map.getPane('pane_AllOtherDistricts_1').style['mix-blend-mode'] = 'normal';
+        var layer_AllOtherDistricts_1 = new L.geoJson(json_AllOtherDistricts_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_AllOtherDistricts_1',
+            layerName: 'layer_AllOtherDistricts_1',
+            pane: 'pane_AllOtherDistricts_1',
+            onEachFeature: pop_AllOtherDistricts_1,
+            style: style_AllOtherDistricts_1_0,
+        });
+        bounds_group.addLayer(layer_AllOtherDistricts_1);
+        map.addLayer(layer_AllOtherDistricts_1);
+        function pop_TotalVehicles_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>Local Area</strong><br />' + (feature.properties['lad18nm'] !== null ? autolinker.link(feature.properties['lad18nm'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>County</strong><br />' + (feature.properties['county'] !== null ? autolinker.link(feature.properties['county'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Parent Code</strong><br />' + (feature.properties['lad18cd'] !== null ? autolinker.link(feature.properties['lad18cd'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Total Vehicles</strong><br />' + (feature.properties['Total Vehicles'] !== null ? autolinker.link(feature.properties['Total Vehicles'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Lorry</strong><br />' + (feature.properties['Lorry'] !== null ? autolinker.link(feature.properties['Lorry'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Car</strong><br />' + (feature.properties['Car'] !== null ? autolinker.link(feature.properties['Car'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Motorbike</strong><br />' + (feature.properties['Motorbike'] !== null ? autolinker.link(feature.properties['Motorbike'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Minibus</strong><br />' + (feature.properties['Minibus'] !== null ? autolinker.link(feature.properties['Minibus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Coach</strong><br />' + (feature.properties['Coach'] !== null ? autolinker.link(feature.properties['Coach'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Van</strong><br />' + (feature.properties['Van'] !== null ? autolinker.link(feature.properties['Van'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_TotalVehicles_2_0(feature) {
+            if (feature.properties['Total Vehicles'] >= 0.000000 && feature.properties['Total Vehicles'] <= 20.000000 ) {
+                return {
+                pane: 'pane_TotalVehicles_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.665)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(247,251,255,0.665)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Total Vehicles'] >= 20.000000 && feature.properties['Total Vehicles'] <= 40.000000 ) {
+                return {
+                pane: 'pane_TotalVehicles_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.665)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(209,227,243,0.665)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Total Vehicles'] >= 40.000000 && feature.properties['Total Vehicles'] <= 60.000000 ) {
+                return {
+                pane: 'pane_TotalVehicles_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.665)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(154,200,225,0.665)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Total Vehicles'] >= 60.000000 && feature.properties['Total Vehicles'] <= 80.000000 ) {
+                return {
+                pane: 'pane_TotalVehicles_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.665)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(82,157,204,0.665)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Total Vehicles'] >= 80.000000 && feature.properties['Total Vehicles'] <= 100.000000 ) {
+                return {
+                pane: 'pane_TotalVehicles_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.665)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(28,108,177,0.665)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['Total Vehicles'] >= 100.000000 && feature.properties['Total Vehicles'] <= 101.000000 ) {
+                return {
+                pane: 'pane_TotalVehicles_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.665)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(8,48,107,0.665)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_TotalVehicles_2');
+        map.getPane('pane_TotalVehicles_2').style.zIndex = 402;
+        map.getPane('pane_TotalVehicles_2').style['mix-blend-mode'] = 'normal';
+        var layer_TotalVehicles_2 = new L.geoJson(json_TotalVehicles_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_TotalVehicles_2',
+            layerName: 'layer_TotalVehicles_2',
+            pane: 'pane_TotalVehicles_2',
+            onEachFeature: pop_TotalVehicles_2,
+            style: style_TotalVehicles_2_0,
+        });
+        bounds_group.addLayer(layer_TotalVehicles_2);
+        map.addLayer(layer_TotalVehicles_2);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Total Vehicles<br /><table><tr><td style="text-align: center;"><img src="legend/TotalVehicles_2_0200.png" /></td><td>0 - 20 </td></tr><tr><td style="text-align: center;"><img src="legend/TotalVehicles_2_20401.png" /></td><td>20 - 40 </td></tr><tr><td style="text-align: center;"><img src="legend/TotalVehicles_2_40602.png" /></td><td>40 - 60 </td></tr><tr><td style="text-align: center;"><img src="legend/TotalVehicles_2_60803.png" /></td><td>60 - 80 </td></tr><tr><td style="text-align: center;"><img src="legend/TotalVehicles_2_801004.png" /></td><td>80 - 100 </td></tr><tr><td style="text-align: center;"><img src="legend/TotalVehicles_2_1001015.png" /></td><td>100 - 101 </td></tr></table>': layer_TotalVehicles_2,'<img src="legend/AllOtherDistricts_1.png" /> All Other Districts': layer_AllOtherDistricts_1,"Base Map": layer_BaseMap_0,},{collapsed:false}).addTo(map);
+        map.on("zoomend", function(){
+
+                if (map.hasLayer(layer_TotalVehicles_2)) {
+                    if (map.getZoom() <= 4 && map.getZoom() >= 19) {
+                        layer_TotalVehicles_2.eachLayer(function (layer) {
+                            layer.openTooltip();
+                        });
+                    } else {
+                        layer_TotalVehicles_2.eachLayer(function (layer) {
+                            layer.closeTooltip();
+                        });
+                    }
+                }
+        });
+        setBounds();
+        var i = 0;
+        layer_TotalVehicles_2.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['fid'] !== null?String('<div style="color: #000000; font-size: 10pt; font-family: \'.SF NS Text\', sans-serif;">' + layer.feature.properties['fid']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_TotalVehicles_2'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+                if (map.hasLayer(layer_TotalVehicles_2)) {
+                    if (map.getZoom() <= 4 && map.getZoom() >= 19) {
+                        layer_TotalVehicles_2.eachLayer(function (layer) {
+                            layer.openTooltip();
+                        });
+                    } else {
+                        layer_TotalVehicles_2.eachLayer(function (layer) {
+                            layer.closeTooltip();
+                        });
+                    }
+                }
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"Total Vehicles": "int"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + key).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + key).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + key).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_TotalVehicles = document.createElement("div");
+            div_TotalVehicles.id = "div_Total Vehicles";
+            div_TotalVehicles.className = "slider";
+            document.getElementById("menu").appendChild(div_TotalVehicles);
+            var lab_TotalVehicles = document.createElement('div');
+            lab_TotalVehicles.innerHTML  = 'Total Vehicles: <span id="val_Total Vehicles"></span>';
+            lab_TotalVehicles.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_TotalVehicles);
+            var reset_TotalVehicles = document.createElement('div');
+            reset_TotalVehicles.innerHTML = 'clear filter';
+            reset_TotalVehicles.className = 'filterlabel';
+            lab_TotalVehicles.className = 'filterlabel';
+            reset_TotalVehicles.onclick = function() {
+                sel_TotalVehicles.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_TotalVehicles);
+            var sel_TotalVehicles = document.getElementById('div_Total Vehicles');
+            noUiSlider.create(sel_TotalVehicles, {
+                connect: true,
+                start: [15, 101],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 15,
+                max: 101
+                }
+            });
+            sel_TotalVehicles.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_TotalVehicles = document.getElementById('val_Total Vehicles');
+            val_TotalVehicles.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+        resetLabels([layer_TotalVehicles_2]);
+        map.on("zoomend", function(){
+            resetLabels([layer_TotalVehicles_2]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_TotalVehicles_2]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_TotalVehicles_2]);
+        });
+        </script>
+    </body>
+</html>
